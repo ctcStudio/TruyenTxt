@@ -1,0 +1,3 @@
+include ':app', ':justified'
+
+project(':justified').projectDir = new File('thirdparty/justified')
