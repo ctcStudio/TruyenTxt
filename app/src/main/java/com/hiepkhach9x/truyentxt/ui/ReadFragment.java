@@ -7,9 +7,11 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.hiepkhach9x.baseTruyenHK.entities.BookData;
+import com.hiepkhach9x.baseTruyenHK.entities.Setting;
 import com.hiepkhach9x.baseTruyenHK.ui.BaseReadFragment;
 import com.hiepkhach9x.baseTruyenHK.view.MyJustifiedTextView;
 import com.hiepkhach9x.truyentxt.R;
+import com.hiepkhach9x.truyentxt.utils.BookPreferences;
 
 import java.util.List;
 
@@ -18,17 +20,13 @@ import java.util.List;
  */
 public class ReadFragment extends BaseReadFragment {
     private static final String KEY_BOOKDATA = "key_bookdata";
-    private static final String KEY_BOOKMARK = "key_bookmark";
-
-    private int mBookMark;
 
     private MyJustifiedTextView mTxtRead;
 
-    public static ReadFragment newInstance(BookData bookData, int bookMark) {
+    public static ReadFragment newInstance(BookData bookData) {
         ReadFragment fragment = new ReadFragment();
         Bundle bundle = new Bundle();
         bundle.putSerializable(KEY_BOOKDATA, bookData);
-        bundle.putInt(KEY_BOOKMARK, bookMark);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -38,7 +36,6 @@ public class ReadFragment extends BaseReadFragment {
             return;
         }
         mBookData = (BookData)bundle.getSerializable(KEY_BOOKDATA);
-        mBookMark = bundle.getInt(KEY_BOOKMARK);
     }
 
     @Override
@@ -49,6 +46,7 @@ public class ReadFragment extends BaseReadFragment {
         } else {
             getDataBundle(getArguments());
         }
+        mSetting = BookPreferences.getInstance().getSetting();
     }
 
     @Nullable
@@ -63,25 +61,4 @@ public class ReadFragment extends BaseReadFragment {
         super.onViewCreated(view, savedInstanceState);
         mTxtRead = (MyJustifiedTextView) view.findViewById(R.id.read_content);
     }
-
-    @Override
-    public void splitBookStart() {
-
-    }
-
-    @Override
-    public void splitBookProcessUpdatePercent(int percent) {
-
-    }
-
-    @Override
-    public void splitBookFinish(List<String> lstPage) {
-
-    }
-
-    @Override
-    public void splitBookError(List<String> lstPage) {
-
-    }
-
 }
