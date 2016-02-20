@@ -3,9 +3,11 @@ package com.hiepkhach9x.baseTruyenHK.task;
 import android.os.AsyncTask;
 
 import com.hiepkhach9x.baseTruyenHK.entities.BookData;
+import com.hiepkhach9x.baseTruyenHK.entities.Setting;
 import com.hiepkhach9x.baseTruyenHK.task.implement.SplitBookListener;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by HungHN on 2/20/2016.
@@ -13,6 +15,11 @@ import java.util.List;
 public class ProcessSplitBookTask extends AsyncTask<BookData,Integer,List<String>> {
 
     private SplitBookListener splitBookListenner;
+    private Setting setting;
+
+    public ProcessSplitBookTask(Setting setting){
+        this.setting = setting;
+    }
 
     @Override
     protected void onPreExecute() {

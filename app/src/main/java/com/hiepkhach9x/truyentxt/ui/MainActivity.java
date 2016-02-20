@@ -51,8 +51,6 @@ public class MainActivity extends AppCompatActivity {
         };
     }
 
-
-
     public int getContentFrame(){
         return R.id.content_frame;
     }

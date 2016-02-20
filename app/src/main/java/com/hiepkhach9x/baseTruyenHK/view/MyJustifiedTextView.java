@@ -15,57 +15,61 @@ import org.jetbrains.annotations.NotNull;
 
 public class MyJustifiedTextView extends JustifiedTextView {
 
-  public MyJustifiedTextView(final @NotNull Context context, final AttributeSet attrs) {
-    super(context, attrs);
-  }
-
-  @Override
-  protected void onAttachedToWindow() {
-    super.onAttachedToWindow();
-    // setTextIsSelectable doesn't work unless the text view is attached to the window
-    // because it uses the window layout params to check if it can display the handles.
-    if (Build.VERSION.SDK_INT > 10) {
-      setTextIsSelectable(true);
+    public MyJustifiedTextView(@NotNull Context context) {
+        super(context);
     }
-  }
 
-  // We want our text to be selectable, but we still want links to be clickable.
-  @Override
-  public boolean onTouchEvent(final @NotNull MotionEvent event) {
-    isClickLink(event);
-    return super.onTouchEvent(event);
-  }
+    public MyJustifiedTextView(@NotNull Context context, AttributeSet attrs) {
+        super(context, attrs);
+    }
 
-  private boolean isClickLink(MotionEvent event){
-    final Spannable text = (Spannable)getText();
-    if (text != null) {
-      if (event.getAction() == MotionEvent.ACTION_DOWN) {
-        final Layout layout = getLayout();
-        if (layout != null) {
-          // final int pos = getOffsetForPosition(event.getX(), event.getY()); // API >= 14 only
-          final int line = getLineAtCoordinate(layout, event.getY());
-          final int pos = getOffsetAtCoordinate(layout, line, event.getX());
-          final ClickableSpan[] links = text.getSpans(pos, pos, ClickableSpan.class);
-          if (links != null && links.length > 0) {
-            links[0].onClick(this);
-            return true;
-          }
+    @Override
+    protected void onAttachedToWindow() {
+        super.onAttachedToWindow();
+        // setTextIsSelectable doesn't work unless the text view is attached to the window
+        // because it uses the window layout params to check if it can display the handles.
+        if (Build.VERSION.SDK_INT > 10) {
+            setTextIsSelectable(true);
         }
-      }
     }
-    return false;
-  }
 
-  private int getLineAtCoordinate(final @NotNull Layout layout, final float y) {
-    final int max = getHeight() - getTotalPaddingBottom() - 1;
-    final int v = Math.min(max, Math.max(0, (int)y - getTotalPaddingTop())) + getScrollY();
-    return layout.getLineForVertical(v);
-  }
+    // We want our text to be selectable, but we still want links to be clickable.
+    @Override
+    public boolean onTouchEvent(final @NotNull MotionEvent event) {
+        isClickLink(event);
+        return super.onTouchEvent(event);
+    }
 
-  private int getOffsetAtCoordinate(final @NotNull Layout layout, final int line, final float x) {
-    final int  max = getWidth() - getTotalPaddingRight() - 1;
-    final int v = Math.min(max, Math.max(0, (int)x - getTotalPaddingLeft())) + getScrollX();
-    return layout.getOffsetForHorizontal(line, v);
-  }
+    private boolean isClickLink(MotionEvent event) {
+        final Spannable text = (Spannable) getText();
+        if (text != null) {
+            if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                final Layout layout = getLayout();
+                if (layout != null) {
+                    // final int pos = getOffsetForPosition(event.getX(), event.getY()); // API >= 14 only
+                    final int line = getLineAtCoordinate(layout, event.getY());
+                    final int pos = getOffsetAtCoordinate(layout, line, event.getX());
+                    final ClickableSpan[] links = text.getSpans(pos, pos, ClickableSpan.class);
+                    if (links != null && links.length > 0) {
+                        links[0].onClick(this);
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    private int getLineAtCoordinate(final @NotNull Layout layout, final float y) {
+        final int max = getHeight() - getTotalPaddingBottom() - 1;
+        final int v = Math.min(max, Math.max(0, (int) y - getTotalPaddingTop())) + getScrollY();
+        return layout.getLineForVertical(v);
+    }
+
+    private int getOffsetAtCoordinate(final @NotNull Layout layout, final int line, final float x) {
+        final int max = getWidth() - getTotalPaddingRight() - 1;
+        final int v = Math.min(max, Math.max(0, (int) x - getTotalPaddingLeft())) + getScrollX();
+        return layout.getOffsetForHorizontal(line, v);
+    }
 
 }
