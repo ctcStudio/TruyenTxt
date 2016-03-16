@@ -67,22 +67,22 @@ public class BaseReadFragment extends Fragment implements SplitBookListener {
         if(splitBookTask != null) {
             switch (splitBookTask.getStatus()){
                 case PENDING:
-                    splitBookTask.setSplitBookListenner(this);
+                    splitBookTask.setSplitBookListener(this);
                     splitBookTask.execute(mBookData);
                 case RUNNING:
                     splitBookTask.cancel(true);
                     splitBookTask = null;
                     splitBookTask = new ProcessSplitBookTask(mSetting);
-                    splitBookTask.setSplitBookListenner(this);
+                    splitBookTask.setSplitBookListener(this);
                     splitBookTask.execute(mBookData);
                 case FINISHED:
                     splitBookTask = new ProcessSplitBookTask(mSetting);
-                    splitBookTask.setSplitBookListenner(this);
+                    splitBookTask.setSplitBookListener(this);
                     splitBookTask.execute(mBookData);
             }
         } else {
             splitBookTask = new ProcessSplitBookTask(mSetting);
-            splitBookTask.setSplitBookListenner(this);
+            splitBookTask.setSplitBookListener(this);
             splitBookTask.execute(mBookData);
         }
     }
