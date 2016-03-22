@@ -1,5 +1,9 @@
 package com.hiepkhach9x.truyentxt.utils;
 
+import com.hiepkhach9x.baseTruyenHK.entities.BookData;
+
+import java.util.HashMap;
+
 /**
  * Created by HungHN on 2/20/2016.
  */
@@ -24,4 +28,10 @@ public class Constants {
     public final static int COMPLEX_UNIT_DIP = 2;
 
     public final static int REAL_POS = 2;
+
+    public static final String SEPARATOR = "/";
+
+    public static final String KEY_BOOK_CONTENT = "key_book_content";
+
+    public static final HashMap<String,BookData> BOOK_DATA_APP = new HashMap<>();
 }

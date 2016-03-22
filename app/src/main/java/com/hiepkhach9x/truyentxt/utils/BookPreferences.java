@@ -2,6 +2,7 @@ package com.hiepkhach9x.truyentxt.utils;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.text.TextUtils;
 
 import com.google.gson.Gson;
 import com.hiepkhach9x.truyentxt.BookApplication;
@@ -70,6 +71,9 @@ public class BookPreferences {
 
     public Setting getSetting() {
         String strSetting = getSharedPreferences().getString(KEY_SETTING, "");
+        if (TextUtils.isEmpty(strSetting)) {
+            return null;
+        }
         Setting bookSetting = mGson.fromJson(strSetting, Setting.class);
         return bookSetting;
     }

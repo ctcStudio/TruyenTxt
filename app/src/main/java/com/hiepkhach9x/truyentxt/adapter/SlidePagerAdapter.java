@@ -4,7 +4,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
-import com.hiepkhach9x.baseTruyenHK.entities.Setting;
+import com.hiepkhach9x.truyentxt.ui.ReadFragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,6 +27,7 @@ public class SlidePagerAdapter extends FragmentStatePagerAdapter {
 
     public void setListPage(List<String> listPage) {
         this.listPage = listPage;
+        notifyDataSetChanged();
     }
 
     public int getItemPosition(Object item) {
@@ -35,7 +36,7 @@ public class SlidePagerAdapter extends FragmentStatePagerAdapter {
 
     @Override
     public Fragment getItem(int position) {
-        return null;
+        return ReadFragment.newInstance(listPage.get(position));
     }
 
     @Override

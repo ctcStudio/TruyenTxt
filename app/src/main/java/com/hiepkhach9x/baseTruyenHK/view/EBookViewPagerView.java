@@ -47,9 +47,13 @@ public class EBookViewPagerView extends ViewPager {
     public boolean onTouchEvent(MotionEvent ev) {
         if (ev.getAction() == MotionEvent.ACTION_UP) {
             if (mStartDragX < mEndDragX && getCurrentItem() == 0) {
-                mListener.onSwipeOutAtStart();
+                if (mListener != null) {
+                    mListener.onSwipeOutAtStart();
+                }
             } else if (mStartDragX > mEndDragX && getCurrentItem() == getAdapter().getCount() - 1) {
-                mListener.onSwipeOutAtEnd();
+                if (mListener != null) {
+                    mListener.onSwipeOutAtEnd();
+                }
             }
         }
         return super.onTouchEvent(ev);

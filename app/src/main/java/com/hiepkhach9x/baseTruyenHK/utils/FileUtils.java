@@ -6,11 +6,16 @@ import android.text.TextUtils;
 
 import com.hiepkhach9x.truyentxt.BookApplication;
 
+import java.io.BufferedInputStream;
 import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 
 /**
@@ -24,9 +29,10 @@ public class FileUtils {
         try {
             FileReader reader = new FileReader(file);
             BufferedReader bufferedReader = new BufferedReader(reader);
-            String line;
-            while ((line = bufferedReader.readLine()) != null) {
-                stringBuilder.append(line);
+            char[] chars = new char[10];
+            int line;
+            while ((line = bufferedReader.read(chars)) > 0) {
+                stringBuilder.append(chars,0,line);
             }
         } catch (FileNotFoundException e) {
             e.printStackTrace();
@@ -42,15 +48,19 @@ public class FileUtils {
         try {
             InputStreamReader reader = new InputStreamReader(assetManager.open(filePath));
             BufferedReader bufferedReader = new BufferedReader(reader);
-            String line;
-            while ((line = bufferedReader.readLine()) != null) {
-                stringBuilder.append(line);
+            char[] chars = new char[24];
+            int offset = 0;
+            int line;
+            while ((line = bufferedReader.read(chars)) > 0) {
+                stringBuilder.append(chars, offset, line);
             }
+            bufferedReader.close();
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
+
         return stringBuilder;
     }
 }

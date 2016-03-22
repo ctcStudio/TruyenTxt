@@ -6,6 +6,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Handler;
 import android.support.v4.view.GravityCompat;
+import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -15,6 +16,8 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.hiepkhach9x.baseTruyenHK.ui.BaseReadActivity;
 import com.hiepkhach9x.baseTruyenHK.view.EBookViewPagerView;
@@ -29,7 +32,7 @@ import com.hiepkhach9x.truyentxt.utils.SystemUiHider;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends BaseReadActivity {
+public class MainActivity extends BaseReadActivity implements ReadFragment.OnReadCallback {
 
     private static final boolean AUTO_HIDE = true;
     private static final int AUTO_HIDE_DELAY_MILLIS = 3000;
@@ -45,7 +48,9 @@ public class MainActivity extends BaseReadActivity {
     private EBookViewPagerView mViewPager;
     private SlidePagerAdapter mPagerAdapter;
     private View controlsView;
-    private View contentView;
+    private TextView mBottomPosition;
+    private TextView mBottomName;
+    private List<String> listPage;
 
     private CustomDrawerAdapter mDrawerAdapter;
 
@@ -55,14 +60,43 @@ public class MainActivity extends BaseReadActivity {
         setContentView(R.layout.activity_main);
         initView();
         initHideFullscreen();
+        listPage = mBookData.getPages();
+        if (listPage == null) {
+            listPage = new ArrayList<>();
+        }
+        if (mPagerAdapter == null) {
+            mPagerAdapter = new SlidePagerAdapter(getSupportFragmentManager(), listPage);
+        }
+        mViewPager.setAdapter(mPagerAdapter);
+
+        mBottomName.setText(mBookData.getAuthor());
+        mBottomPosition.setText((mViewPager.getCurrentItem() + 1) + "/" + listPage.size());
     }
 
     private void initView() {
         //
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
+        mBottomPosition = (TextView) findViewById(R.id.position);
+        mBottomName = (TextView) findViewById(R.id.name_chap);
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mLeftMenu = (ListView) findViewById(R.id.left_menu);
         mViewPager = (EBookViewPagerView) findViewById(R.id.viewContent);
+        mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                mBottomPosition.setText((position + 1) + "/" + listPage.size());
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
         /***************************************************************/
         setSupportActionBar(mToolbar);
         mActionBar = getSupportActionBar();
@@ -235,7 +269,7 @@ public class MainActivity extends BaseReadActivity {
 
     @Override
     public void splitBookStart() {
-
+        showLoading();
     }
 
     @Override
@@ -245,11 +279,23 @@ public class MainActivity extends BaseReadActivity {
 
     @Override
     public void splitBookFinish(List<String> lstPage) {
-
+        hideLoading();
+        Toast.makeText(this, "number page: " + lstPage.size(), Toast.LENGTH_SHORT).show();
+        listPage = lstPage;
+        mPagerAdapter.setListPage(listPage);
     }
 
     @Override
     public void splitBookError(List<String> lstPage) {
 
+    }
+
+    @Override
+    public void onContentClick() {
+        if (TOGGLE_ON_CLICK) {
+            mSystemUiHider.toggle();
+        } else {
+            mSystemUiHider.show();
+        }
     }
 }

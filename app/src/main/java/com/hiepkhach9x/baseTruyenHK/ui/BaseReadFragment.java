@@ -1,6 +1,8 @@
 package com.hiepkhach9x.baseTruyenHK.ui;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.View;
@@ -11,32 +13,36 @@ import com.hiepkhach9x.baseTruyenHK.entities.Setting;
 import com.hiepkhach9x.baseTruyenHK.task.ProcessSplitBookTask;
 import com.hiepkhach9x.baseTruyenHK.task.implement.SplitBookListener;
 import com.hiepkhach9x.truyentxt.R;
+import com.hiepkhach9x.truyentxt.ui.MainActivity;
+import com.hiepkhach9x.truyentxt.utils.BookPreferences;
 
 import java.util.List;
 
 /**
  * Created by HungHN on 2/20/2016.
  */
-public class BaseReadFragment extends Fragment implements SplitBookListener {
+public class BaseReadFragment extends Fragment {
 
-    protected BookData mBookData;
+    protected String mPageData;
     protected Setting mSetting;
     private ProgressBar mLoading;
     private ProgressDialog mDialog;
-    private ProcessSplitBookTask splitBookTask;
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+    }
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mLoading = (ProgressBar) view.findViewById(R.id.loading);
+        mSetting = BookPreferences.getInstance().getSetting();
     }
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        mDialog = new ProgressDialog(getActivity());
-        mDialog.setMessage("Loading...");
-        mDialog.setCanceledOnTouchOutside(true);
     }
 
     protected void showLoading() {
@@ -46,6 +52,12 @@ public class BaseReadFragment extends Fragment implements SplitBookListener {
     }
 
     protected void showDialogLoading() {
+        if (mDialog == null) {
+            mDialog = new ProgressDialog(getActivity());
+            mDialog.setMessage("Loading...");
+            mDialog.setCanceledOnTouchOutside(true);
+        }
+
         if (mDialog != null && !mDialog.isShowing()) {
             mDialog.show();
         }
@@ -61,49 +73,5 @@ public class BaseReadFragment extends Fragment implements SplitBookListener {
         if (mDialog != null && mDialog.isShowing()) {
             mDialog.dismiss();
         }
-    }
-
-    protected void makeSplitBookToPage() {
-        if(splitBookTask != null) {
-            switch (splitBookTask.getStatus()){
-                case PENDING:
-                    splitBookTask.setSplitBookListener(this);
-                    splitBookTask.execute(mBookData);
-                case RUNNING:
-                    splitBookTask.cancel(true);
-                    splitBookTask = null;
-                    splitBookTask = new ProcessSplitBookTask(mSetting);
-                    splitBookTask.setSplitBookListener(this);
-                    splitBookTask.execute(mBookData);
-                case FINISHED:
-                    splitBookTask = new ProcessSplitBookTask(mSetting);
-                    splitBookTask.setSplitBookListener(this);
-                    splitBookTask.execute(mBookData);
-            }
-        } else {
-            splitBookTask = new ProcessSplitBookTask(mSetting);
-            splitBookTask.setSplitBookListener(this);
-            splitBookTask.execute(mBookData);
-        }
-    }
-
-    @Override
-    public void splitBookStart() {
-
-    }
-
-    @Override
-    public void splitBookProcessUpdatePercent(int percent) {
-
-    }
-
-    @Override
-    public void splitBookFinish(List<String> lstPage) {
-
-    }
-
-    @Override
-    public void splitBookError(List<String> lstPage) {
-
     }
 }

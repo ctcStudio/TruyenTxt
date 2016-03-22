@@ -8,4 +8,9 @@ public class Config {
 
     public final static String URL_MARKET = "market://search?q=pub:CTC Studio";
 
+    public static final Object FONT_FOLDER = "font";
+
+    public static final String BOOK_NAME = "TruTien.txt";
+
+    public static final String BOOK_FOLDER = "books";
 }

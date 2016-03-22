@@ -1,6 +1,7 @@
 package com.hiepkhach9x.baseTruyenHK.entities;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * Created by HungHN on 2/20/2016.
@@ -12,7 +13,7 @@ public class BookData implements Serializable {
     private String date;
     private String description;
     private String path;
-    private StringBuilder content;
+    private List<String> pages;
     private int bookMark;
     private int numberPage;
 
@@ -56,12 +57,12 @@ public class BookData implements Serializable {
         this.path = path;
     }
 
-    public StringBuilder getContent() {
-        return content;
+    public List<String> getPages() {
+        return pages;
     }
 
-    public void setContent(StringBuilder content) {
-        this.content = content;
+    public void setPages(List<String> pages) {
+        this.pages = pages;
     }
 
     public int getBookMark() {
