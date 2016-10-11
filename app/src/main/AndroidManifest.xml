@@ -3,7 +3,7 @@
     package="com.hiepkhach9x.truyentxt">
 
     <application
-        android:name=".BookApplication"
+        android:name="com.hiepkhach9x.baseTruyenHK.BookApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -23,6 +23,11 @@
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/app_name"
             android:theme="@style/AppCombatFullscreen" />
+
+        <provider
+            android:name="com.hiepkhach9x.baseTruyenHK.contentProvider.BookProvider"
+            android:authorities="com.book.provider.trutien"
+            android:exported="true" />
     </application>
 
 </manifest>

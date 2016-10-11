@@ -1,4 +1,4 @@
-package com.hiepkhach9x.truyentxt;
+package com.hiepkhach9x.baseTruyenHK;
 
 import android.app.Application;
 

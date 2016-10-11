@@ -4,18 +4,18 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.DisplayMetrics;
-import android.util.TypedValue;
 import android.view.View;
 import android.widget.ProgressBar;
 
 import com.hiepkhach9x.baseTruyenHK.entities.BookData;
 import com.hiepkhach9x.baseTruyenHK.entities.Setting;
 import com.hiepkhach9x.baseTruyenHK.task.ProcessSplitBookTask;
+import com.hiepkhach9x.baseTruyenHK.task.SplitAndSaveBookTask;
 import com.hiepkhach9x.baseTruyenHK.task.implement.SplitBookListener;
 import com.hiepkhach9x.truyentxt.R;
 import com.hiepkhach9x.truyentxt.utils.BookPreferences;
-import com.hiepkhach9x.truyentxt.utils.Config;
-import com.hiepkhach9x.truyentxt.utils.Constants;
+import com.hiepkhach9x.baseTruyenHK.utils.Config;
+import com.hiepkhach9x.baseTruyenHK.utils.Constants;
 import com.hiepkhach9x.truyentxt.utils.LogUtils;
 
 import java.util.List;
@@ -56,7 +56,7 @@ public class SplashActivity extends AppCompatActivity implements SplitBookListen
         mBookData.setAuthor("Tieu Dinh");
         String filePath = Config.BOOK_FOLDER + Constants.SEPARATOR + Config.BOOK_NAME;
         mBookData.setPath(filePath);
-        ProcessSplitBookTask processSplitBookTask = new ProcessSplitBookTask();
+        SplitAndSaveBookTask processSplitBookTask = new SplitAndSaveBookTask(this);
         processSplitBookTask.setSplitBookListener(this);
         processSplitBookTask.execute(filePath);
     }

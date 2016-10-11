@@ -1,4 +1,4 @@
-package com.hiepkhach9x.truyentxt.utils;
+package com.hiepkhach9x.baseTruyenHK.utils;
 
 /**
  * Created by HungHN on 2/20/2016.
@@ -13,4 +13,5 @@ public class Config {
     public static final String BOOK_NAME = "TruTien.txt";
 
     public static final String BOOK_FOLDER = "books";
+    public static final String BOOK_ID = "trutien";
 }

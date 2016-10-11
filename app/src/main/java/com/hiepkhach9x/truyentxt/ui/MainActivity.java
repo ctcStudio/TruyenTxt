@@ -25,7 +25,7 @@ import com.hiepkhach9x.truyentxt.R;
 import com.hiepkhach9x.truyentxt.adapter.CustomDrawerAdapter;
 import com.hiepkhach9x.truyentxt.adapter.SlidePagerAdapter;
 import com.hiepkhach9x.truyentxt.entities.DrawerItem;
-import com.hiepkhach9x.truyentxt.utils.Config;
+import com.hiepkhach9x.baseTruyenHK.utils.Config;
 import com.hiepkhach9x.truyentxt.utils.LogUtils;
 import com.hiepkhach9x.truyentxt.utils.SystemUiHider;
 

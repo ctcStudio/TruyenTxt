@@ -5,7 +5,7 @@ import android.content.SharedPreferences;
 import android.text.TextUtils;
 
 import com.google.gson.Gson;
-import com.hiepkhach9x.truyentxt.BookApplication;
+import com.hiepkhach9x.baseTruyenHK.BookApplication;
 import com.hiepkhach9x.baseTruyenHK.entities.Setting;
 
 /**

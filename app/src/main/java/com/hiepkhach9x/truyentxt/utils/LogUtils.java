@@ -2,6 +2,9 @@ package com.hiepkhach9x.truyentxt.utils;
 
 import android.util.Log;
 
+import com.hiepkhach9x.baseTruyenHK.utils.Config;
+import com.hiepkhach9x.baseTruyenHK.utils.Constants;
+
 /**
  * Created by HungHN on 2/20/2016.
  */

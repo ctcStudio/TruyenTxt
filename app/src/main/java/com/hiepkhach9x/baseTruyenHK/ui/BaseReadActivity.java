@@ -3,16 +3,14 @@ package com.hiepkhach9x.baseTruyenHK.ui;
 import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.DisplayMetrics;
 import android.view.View;
 import android.widget.ProgressBar;
 
 import com.hiepkhach9x.baseTruyenHK.entities.BookData;
 import com.hiepkhach9x.baseTruyenHK.entities.Setting;
-import com.hiepkhach9x.baseTruyenHK.task.ProcessSplitBookTask;
 import com.hiepkhach9x.baseTruyenHK.task.implement.SplitBookListener;
 import com.hiepkhach9x.truyentxt.R;
-import com.hiepkhach9x.truyentxt.utils.Constants;
+import com.hiepkhach9x.baseTruyenHK.utils.Constants;
 
 /**
  * Created by HungHN on 2/20/2016.

@@ -3,9 +3,9 @@ package com.hiepkhach9x.baseTruyenHK.entities;
 import android.graphics.Typeface;
 import android.text.TextPaint;
 
-import com.hiepkhach9x.truyentxt.BookApplication;
-import com.hiepkhach9x.truyentxt.utils.Config;
-import com.hiepkhach9x.truyentxt.utils.Constants;
+import com.hiepkhach9x.baseTruyenHK.BookApplication;
+import com.hiepkhach9x.baseTruyenHK.utils.Config;
+import com.hiepkhach9x.baseTruyenHK.utils.Constants;
 
 /**
  * Created by HungHN on 2/20/2016.

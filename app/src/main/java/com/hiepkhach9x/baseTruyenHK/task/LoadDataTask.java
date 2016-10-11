@@ -1,18 +1,9 @@
 package com.hiepkhach9x.baseTruyenHK.task;
 
-import android.content.res.AssetManager;
 import android.os.AsyncTask;
-import android.util.Log;
 
 import com.hiepkhach9x.baseTruyenHK.task.implement.LoadBookListener;
 import com.hiepkhach9x.baseTruyenHK.utils.FileUtils;
-import com.hiepkhach9x.truyentxt.BookApplication;
-
-import java.io.BufferedInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
 
 /**
  * Created by HungHN on 3/16/2016.
