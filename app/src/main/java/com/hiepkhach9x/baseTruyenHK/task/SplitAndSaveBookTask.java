@@ -10,6 +10,7 @@ import android.text.StaticLayout;
 
 import com.hiepkhach9x.baseTruyenHK.contentProvider.BookProvider;
 import com.hiepkhach9x.baseTruyenHK.database.DbConstants;
+import com.hiepkhach9x.baseTruyenHK.entities.Page;
 import com.hiepkhach9x.baseTruyenHK.entities.Setting;
 import com.hiepkhach9x.baseTruyenHK.task.implement.SplitBookListener;
 import com.hiepkhach9x.baseTruyenHK.utils.FileUtils;
@@ -45,15 +46,20 @@ public class SplitAndSaveBookTask extends AsyncTask<String, Integer, List<String
 
     @Override
     protected List<String> doInBackground(String... strings) {
+        List<String> loadFromData = getDataBook();
+        if(loadFromData.size() > 0) {
+            return loadFromData;
+        } else {
+            contentResolver.delete(BookProvider.CONTENT_URI, null, null);
+        }
         String filePath = strings[0];
         long time = System.currentTimeMillis();
         StringBuilder content = FileUtils.readFileFromAsset(filePath);
+        long contentLength = content.length();
         LogUtils.d("Load text: " + (System.currentTimeMillis() - time));
         ArrayList<String> lstSplitText = new ArrayList<>();
         int offsetI = 0;
         int offsetII = 0;
-        String contentSplit = "";
-
         StaticLayout layout = new StaticLayout(content, setting.getTextPaint(), setting.getWidth() - (setting.getHorizontalPading()), Layout.Alignment.ALIGN_NORMAL, setting.getSpacingMult(), setting.getSpacingAdd(), false);
         int totalLines = layout.getLineCount();
         int linePerPage = layout.getLineForVertical(setting.getHeight() - setting.getVerticalPadding()) - 1;
@@ -79,7 +85,7 @@ public class SplitAndSaveBookTask extends AsyncTask<String, Integer, List<String
             if (isCancelled()) {
                 return lstSplitText;
             }
-        } while (offsetII < content.length());
+        } while (offsetII < contentLength);
         LogUtils.d("split page: " + (System.currentTimeMillis() - time));
         return lstSplitText;
     }
@@ -97,6 +103,28 @@ public class SplitAndSaveBookTask extends AsyncTask<String, Integer, List<String
             cursor.close();
         }
         return isExist;
+    }
+
+    private List<String> getDataBook() {
+        ArrayList<String> lstSplitText = new ArrayList<>();
+        Cursor cursor = contentResolver.query(BookProvider.CONTENT_URI,null,null,null,DbConstants.KEY_COL_ID + " ASC");
+        if(cursor !=null) {
+            while (cursor.moveToNext()) {
+                Page page = genPageFromCursor(cursor);
+                lstSplitText.add(page.getData());
+            }
+            cursor.close();
+        }
+        return lstSplitText;
+    }
+
+    private Page genPageFromCursor(Cursor cursor) {
+        Page page = new Page();
+        int idIndex = cursor.getColumnIndex(DbConstants.KEY_COL_ID);
+        page.setId(cursor.getInt(idIndex));
+        int dataIndex = cursor.getColumnIndex(DbConstants.KEY_COL_DATA);
+        page.setData(cursor.getString(dataIndex));
+        return page;
     }
 
     @Override

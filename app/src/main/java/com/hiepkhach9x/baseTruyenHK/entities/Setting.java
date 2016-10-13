@@ -32,6 +32,8 @@ public class Setting {
 
     private TextPaint textPaint;
 
+    private Typeface textFont;
+
     private String font = "Roboto-Regular.ttf";
 
     public Setting() {

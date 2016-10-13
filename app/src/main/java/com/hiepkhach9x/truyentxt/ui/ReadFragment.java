@@ -3,6 +3,7 @@ package com.hiepkhach9x.truyentxt.ui;
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -68,6 +69,7 @@ public class ReadFragment extends BaseReadFragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mTxtRead = (MyJustifiedTextView) view.findViewById(R.id.read_content);
+        settingView();
         mTxtRead.setText(mPageData);
         mTxtRead.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -78,6 +80,14 @@ public class ReadFragment extends BaseReadFragment {
             }
         });
         hideLoading();
+    }
+
+    private void settingView() {
+        mTxtRead.setPadding(mSetting.getHorizontalPading(),mSetting.getVerticalPadding(),
+                mSetting.getHorizontalPading(),mSetting.getVerticalPadding());
+        mTxtRead.setTextColor(mSetting.getTextColor());
+        mTxtRead.setTypeface(mSetting.getTextPaint().getTypeface());
+        mTxtRead.setLineSpacing(mSetting.getSpacingAdd(),mSetting.getSpacingMult());
     }
 
     public interface OnReadCallback {
