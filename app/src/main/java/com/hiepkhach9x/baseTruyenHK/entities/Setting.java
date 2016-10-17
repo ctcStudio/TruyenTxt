@@ -7,6 +7,8 @@ import com.hiepkhach9x.baseTruyenHK.BookApplication;
 import com.hiepkhach9x.baseTruyenHK.utils.Config;
 import com.hiepkhach9x.baseTruyenHK.utils.Constants;
 
+import java.util.Set;
+
 /**
  * Created by HungHN on 2/20/2016.
  */
@@ -26,15 +28,15 @@ public class Setting {
 
     private int verticalPadding = 10;
 
-    private float spacingAdd = 10f;
+    private float spacingAdd = Constants.SPACING_LINE_MAP.get(Constants.KEY_SPACING_LINE_NORMAL);
 
-    private float spacingMult = 1.0f;
+    private float spacingMult = Constants.SPACING_MUL_MAP.get(Constants.KEY_SPACING_MUL_NORMAL);
 
     private TextPaint textPaint;
 
     private Typeface textFont;
 
-    private String font = "Roboto-Regular.ttf";
+    private String font = Constants.FONT_MAP.get(Constants.KEY_FONT_ROBOTO);
 
     public Setting() {
     }
@@ -140,5 +142,31 @@ public class Setting {
 
     public void setWidth(int width) {
         this.width = width;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if(o instanceof Setting) {
+            Setting setting = (Setting)o;
+
+            if((setting.getWidth() * setting.getHeight()) == (this.width * this.height)
+                    && (setting.getVerticalPadding() == this.verticalPadding)
+                    && (setting.getHorizontalPading() == this.horizontalPading)
+                    && (setting.getSpacingAdd() == this.spacingAdd)
+                    && (setting.getSpacingMult() == this.spacingMult)
+                    && (setting.getTextSize() == this.textSize)
+                    && (setting.getFont().equals(this.font))) {
+                return true;
+            } else {
+                return false;
+            }
+
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return super.hashCode();
     }
 }

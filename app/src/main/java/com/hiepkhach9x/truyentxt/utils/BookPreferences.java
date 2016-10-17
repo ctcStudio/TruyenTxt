@@ -77,4 +77,8 @@ public class BookPreferences {
         Setting bookSetting = mGson.fromJson(strSetting, Setting.class);
         return bookSetting;
     }
+
+    public void removeSetting() {
+        getEditor().remove(KEY_SETTING).commit();
+    }
 }

@@ -13,5 +13,8 @@ public class Config {
     public static final String BOOK_NAME = "TruTien.txt";
 
     public static final String BOOK_FOLDER = "books";
+
     public static final String BOOK_ID = "trutien";
+
+    public static final String BOOK_SETTING = "setting";
 }

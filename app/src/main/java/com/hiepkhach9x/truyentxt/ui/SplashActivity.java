@@ -42,11 +42,16 @@ public class SplashActivity extends AppCompatActivity implements SplitBookListen
             getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
             int height = displaymetrics.heightPixels;
             int width = displaymetrics.widthPixels;
-            float textSize = getResources().getDimension(R.dimen.text_size_small);
+            float textSize = Constants.getFloatFromDimen(getResources(),R.dimen.text_size_normal);
             LogUtils.d("Text size: " + textSize);
             mSetting.setTextSize(textSize);
             mSetting.setWidth(width);
             mSetting.setHeight(height);
+            int horPadding = getResources().getDimensionPixelSize(Constants.SPACING_HOR_MAP.get(Constants.KEY_SPACING_HOR_NORMAL));
+            mSetting.setHorizontalPading(horPadding);
+            int verPadding = getResources().getDimensionPixelSize(Constants.SPACING_VER_MAP.get(Constants.KEY_SPACING_VER_NORMAL));
+            mSetting.setVerticalPadding(verPadding);
+
             BookPreferences.getInstance().saveSetting(mSetting);
         }
 
@@ -56,7 +61,7 @@ public class SplashActivity extends AppCompatActivity implements SplitBookListen
         mBookData.setAuthor("Tieu Dinh");
         String filePath = Config.BOOK_FOLDER + Constants.SEPARATOR + Config.BOOK_NAME;
         mBookData.setPath(filePath);
-        SplitAndSaveBookTask processSplitBookTask = new SplitAndSaveBookTask(this);
+        SplitAndSaveBookTask processSplitBookTask = new SplitAndSaveBookTask(this,mSetting);
         processSplitBookTask.setSplitBookListener(this);
         processSplitBookTask.execute(filePath);
     }

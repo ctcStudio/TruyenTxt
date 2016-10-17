@@ -14,6 +14,7 @@ import com.hiepkhach9x.baseTruyenHK.entities.Page;
 import com.hiepkhach9x.baseTruyenHK.entities.Setting;
 import com.hiepkhach9x.baseTruyenHK.task.implement.SplitBookListener;
 import com.hiepkhach9x.baseTruyenHK.utils.FileUtils;
+import com.hiepkhach9x.baseTruyenHK.utils.Utilities;
 import com.hiepkhach9x.truyentxt.utils.BookPreferences;
 import com.hiepkhach9x.truyentxt.utils.LogUtils;
 
@@ -30,8 +31,8 @@ public class SplitAndSaveBookTask extends AsyncTask<String, Integer, List<String
     private Context context;
     private ContentResolver contentResolver;
 
-    public SplitAndSaveBookTask(Context context) {
-        setting = BookPreferences.getInstance().getSetting();
+    public SplitAndSaveBookTask(Context context,Setting setting) {
+        this.setting = setting;
         this.context = context;
         this.contentResolver = context.getContentResolver();
     }
@@ -47,10 +48,14 @@ public class SplitAndSaveBookTask extends AsyncTask<String, Integer, List<String
     @Override
     protected List<String> doInBackground(String... strings) {
         List<String> loadFromData = getDataBook();
-        if(loadFromData.size() > 0) {
+        Setting loadDataSetting =  getSettingBook();
+        if((loadDataSetting != null)
+                && (loadDataSetting.equals(setting))
+                && (loadFromData.size() > 0)) {
             return loadFromData;
         } else {
-            contentResolver.delete(BookProvider.CONTENT_URI, null, null);
+            contentResolver.delete(BookProvider.CONTENT_URI_DATA, null, null);
+            contentResolver.update(BookProvider.CONTENT_URI_SETTING,Utilities.genValueFromSetting(setting),null,null);
         }
         String filePath = strings[0];
         long time = System.currentTimeMillis();
@@ -75,11 +80,11 @@ public class SplitAndSaveBookTask extends AsyncTask<String, Integer, List<String
             values.put(DbConstants.KEY_COL_ID,i);
             values.put(DbConstants.KEY_COL_DATA,sub);
             if(!isExist(i)) {
-                contentResolver.insert(BookProvider.CONTENT_URI, values);
+                contentResolver.insert(BookProvider.CONTENT_URI_DATA, values);
             } else {
                 String whereClause = DbConstants.KEY_COL_ID + "=?";
                 String[] whereArgs = new String[]{String.valueOf(i)};
-                contentResolver.update(BookProvider.CONTENT_URI,values,whereClause,whereArgs);
+                contentResolver.update(BookProvider.CONTENT_URI_DATA,values,whereClause,whereArgs);
             }
             i++;
             if (isCancelled()) {
@@ -93,7 +98,7 @@ public class SplitAndSaveBookTask extends AsyncTask<String, Integer, List<String
     boolean isExist(int id) {
         String selections = DbConstants.KEY_COL_ID + "=?";
         String[] selectArgs = new String[]{String.valueOf(id)};
-        Cursor cursor = contentResolver.query(BookProvider.CONTENT_URI,
+        Cursor cursor = contentResolver.query(BookProvider.CONTENT_URI_DATA,
                 null, selections, selectArgs, null);
         boolean isExist = false;
         if (cursor != null && cursor.getCount() > 0) {
@@ -107,10 +112,10 @@ public class SplitAndSaveBookTask extends AsyncTask<String, Integer, List<String
 
     private List<String> getDataBook() {
         ArrayList<String> lstSplitText = new ArrayList<>();
-        Cursor cursor = contentResolver.query(BookProvider.CONTENT_URI,null,null,null,DbConstants.KEY_COL_ID + " ASC");
+        Cursor cursor = contentResolver.query(BookProvider.CONTENT_URI_DATA,null,null,null,DbConstants.KEY_COL_ID + " ASC");
         if(cursor !=null) {
             while (cursor.moveToNext()) {
-                Page page = genPageFromCursor(cursor);
+                Page page = Utilities.genPageFromCursor(cursor);
                 lstSplitText.add(page.getData());
             }
             cursor.close();
@@ -118,14 +123,17 @@ public class SplitAndSaveBookTask extends AsyncTask<String, Integer, List<String
         return lstSplitText;
     }
 
-    private Page genPageFromCursor(Cursor cursor) {
-        Page page = new Page();
-        int idIndex = cursor.getColumnIndex(DbConstants.KEY_COL_ID);
-        page.setId(cursor.getInt(idIndex));
-        int dataIndex = cursor.getColumnIndex(DbConstants.KEY_COL_DATA);
-        page.setData(cursor.getString(dataIndex));
-        return page;
+    private Setting getSettingBook() {
+        Setting setting = null;
+        Cursor cursor = contentResolver.query(BookProvider.CONTENT_URI_SETTING,null,null,null,null);
+        if(cursor !=null) {
+            cursor.moveToFirst();
+            setting = Utilities.genSettingFromCursor(cursor);
+            cursor.close();
+        }
+        return setting;
     }
+
 
     @Override
     protected void onCancelled(List<String> strings) {
