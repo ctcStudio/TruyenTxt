@@ -7,6 +7,7 @@ import android.database.Cursor;
 import android.os.AsyncTask;
 import android.text.Layout;
 import android.text.StaticLayout;
+import android.util.Pair;
 
 import com.hiepkhach9x.baseTruyenHK.contentProvider.BookProvider;
 import com.hiepkhach9x.baseTruyenHK.database.DbConstants;
@@ -59,38 +60,61 @@ public class SplitAndSaveBookTask extends AsyncTask<String, Integer, List<String
         }
         String filePath = strings[0];
         long time = System.currentTimeMillis();
-        StringBuilder content = FileUtils.readFileFromAsset(filePath);
-        long contentLength = content.length();
+        ArrayList<StringBuilder> dataBookRead = FileUtils.readDataFileFromAsset(filePath);
+        StringBuilder builder = new StringBuilder();
         LogUtils.d("Load text: " + (System.currentTimeMillis() - time));
         ArrayList<String> lstSplitText = new ArrayList<>();
-        int offsetI = 0;
-        int offsetII = 0;
-        StaticLayout layout = new StaticLayout(content, setting.getTextPaint(), setting.getWidth() - (setting.getHorizontalPading()), Layout.Alignment.ALIGN_NORMAL, setting.getSpacingMult(), setting.getSpacingAdd(), false);
-        int totalLines = layout.getLineCount();
-        int linePerPage = layout.getLineForVertical(setting.getHeight() - setting.getVerticalPadding()) - 1;
-        int i = 0;
-        LogUtils.d("get Line per page: " + (System.currentTimeMillis() - time));
-        do {
-            int line = Math.min(linePerPage * (i + 1), totalLines - 1);
-            offsetII = layout.getOffsetForHorizontal(line, setting.getWidth() - setting.getHorizontalPading());
-            String sub = content.substring(offsetI, offsetII).trim();
-            offsetI = offsetII;
-            lstSplitText.add(sub);
-            ContentValues values = new ContentValues();
-            values.put(DbConstants.KEY_COL_ID,i);
-            values.put(DbConstants.KEY_COL_DATA,sub);
-            if(!isExist(i)) {
-                contentResolver.insert(BookProvider.CONTENT_URI_DATA, values);
-            } else {
-                String whereClause = DbConstants.KEY_COL_ID + "=?";
-                String[] whereArgs = new String[]{String.valueOf(i)};
-                contentResolver.update(BookProvider.CONTENT_URI_DATA,values,whereClause,whereArgs);
+        if(dataBookRead.size() > 0) {
+            int count = 0;
+            StringBuilder temp = new StringBuilder("");
+            while (count < dataBookRead.size()) {
+                temp = new StringBuilder();
+                builder.append(dataBookRead.get(count));
+                int offsetI = 0;
+                int offsetII;
+                int contentLength = builder.length();
+                StaticLayout layout = new StaticLayout(builder, setting.getTextPaint(), setting.getWidth() - (setting.getHorizontalPading()), Layout.Alignment.ALIGN_NORMAL, setting.getSpacingMult(), setting.getSpacingAdd(), false);
+                int totalLines = layout.getLineCount();
+                int linePerPage = layout.getLineForVertical(setting.getHeight() - setting.getVerticalPadding()) - 1;
+                int i = 0;
+                do {
+                    int line;
+                    if(linePerPage * (i + 1) <= totalLines -1) {
+                        line = linePerPage * (i + 1);
+                        offsetII = layout.getOffsetForHorizontal(line, setting.getWidth() - setting.getHorizontalPading());
+                        String sub = builder.substring(offsetI, offsetII).trim();
+                        offsetI = offsetII;
+                        if(offsetII < contentLength) {
+                            lstSplitText.add(sub);
+                            ContentValues values = new ContentValues();
+                            values.put(DbConstants.KEY_COL_ID,i);
+                            values.put(DbConstants.KEY_COL_DATA,sub);
+                            if(!isExist(i)) {
+                                contentResolver.insert(BookProvider.CONTENT_URI_DATA, values);
+                            } else {
+                                String whereClause = DbConstants.KEY_COL_ID + "=?";
+                                String[] whereArgs = new String[]{String.valueOf(i)};
+                                contentResolver.update(BookProvider.CONTENT_URI_DATA,values,whereClause,whereArgs);
+                            }
+                        } else {
+                            temp.append(sub);
+                        }
+                    } else {
+                        temp.append(builder.substring(offsetI,contentLength));
+                        offsetII = contentLength;
+                    }
+                    i++;
+                    if (isCancelled()) {
+                        return lstSplitText;
+                    }
+                } while ((offsetII < contentLength));
+                builder = new StringBuilder();
+                builder.append(temp);
+                count ++;
             }
-            i++;
-            if (isCancelled()) {
-                return lstSplitText;
-            }
-        } while (offsetII < contentLength);
+            lstSplitText.add(temp.toString());
+        }
+
         LogUtils.d("split page: " + (System.currentTimeMillis() - time));
         return lstSplitText;
     }

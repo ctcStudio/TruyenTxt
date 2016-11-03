@@ -9,7 +9,6 @@ import android.widget.ProgressBar;
 
 import com.hiepkhach9x.baseTruyenHK.entities.BookData;
 import com.hiepkhach9x.baseTruyenHK.entities.Setting;
-import com.hiepkhach9x.baseTruyenHK.task.ProcessSplitBookTask;
 import com.hiepkhach9x.baseTruyenHK.task.SplitAndSaveBookTask;
 import com.hiepkhach9x.baseTruyenHK.task.implement.SplitBookListener;
 import com.hiepkhach9x.truyentxt.R;
@@ -64,6 +63,7 @@ public class SplashActivity extends AppCompatActivity implements SplitBookListen
         SplitAndSaveBookTask processSplitBookTask = new SplitAndSaveBookTask(this,mSetting);
         processSplitBookTask.setSplitBookListener(this);
         processSplitBookTask.execute(filePath);
+
     }
 
     @Override
