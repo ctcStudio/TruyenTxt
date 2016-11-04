@@ -63,8 +63,10 @@ public class SplitAndSaveBookTask extends AsyncTask<String, Integer, List<String
         ArrayList<StringBuilder> dataBookRead = FileUtils.readDataFileFromAsset(filePath);
         StringBuilder builder = new StringBuilder();
         LogUtils.d("Load text: " + (System.currentTimeMillis() - time));
+        time = System.currentTimeMillis();
         ArrayList<String> lstSplitText = new ArrayList<>();
-        if(dataBookRead.size() > 0) {
+        int size = dataBookRead.size();
+        if(size > 0) {
             int count = 0;
             StringBuilder temp = new StringBuilder("");
             while (count < dataBookRead.size()) {
@@ -86,16 +88,6 @@ public class SplitAndSaveBookTask extends AsyncTask<String, Integer, List<String
                         offsetI = offsetII;
                         if(offsetII < contentLength) {
                             lstSplitText.add(sub);
-                            ContentValues values = new ContentValues();
-                            values.put(DbConstants.KEY_COL_ID,i);
-                            values.put(DbConstants.KEY_COL_DATA,sub);
-                            if(!isExist(i)) {
-                                contentResolver.insert(BookProvider.CONTENT_URI_DATA, values);
-                            } else {
-                                String whereClause = DbConstants.KEY_COL_ID + "=?";
-                                String[] whereArgs = new String[]{String.valueOf(i)};
-                                contentResolver.update(BookProvider.CONTENT_URI_DATA,values,whereClause,whereArgs);
-                            }
                         } else {
                             temp.append(sub);
                         }
@@ -110,13 +102,37 @@ public class SplitAndSaveBookTask extends AsyncTask<String, Integer, List<String
                 } while ((offsetII < contentLength));
                 builder = new StringBuilder();
                 builder.append(temp);
+                int percent = (count * 100)/size  ;
+                publishProgress(percent);
                 count ++;
+
+                if (isCancelled()) {
+                    return lstSplitText;
+                }
             }
             lstSplitText.add(temp.toString());
         }
-
+        LogUtils.d("split page: " + (System.currentTimeMillis() - time));
+        time = System.currentTimeMillis();
+        insertPageProvider(lstSplitText);
+        publishProgress(100);
         LogUtils.d("split page: " + (System.currentTimeMillis() - time));
         return lstSplitText;
+    }
+
+    private void insertPageProvider(ArrayList<String> lstSplitText) {
+        for (int i = 0; i < lstSplitText.size(); i++) {
+            ContentValues values= new ContentValues();
+            values.put(DbConstants.KEY_COL_ID,i);
+            values.put(DbConstants.KEY_COL_DATA,lstSplitText.get(i));
+            if(!isExist(i)) {
+                contentResolver.insert(BookProvider.CONTENT_URI_DATA, values);
+            } else {
+                String whereClause = DbConstants.KEY_COL_ID + "=?";
+                String[] whereArgs = new String[]{String.valueOf(i)};
+                contentResolver.update(BookProvider.CONTENT_URI_DATA,values,whereClause,whereArgs);
+            }
+        }
     }
 
     boolean isExist(int id) {

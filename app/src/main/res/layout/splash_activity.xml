@@ -2,15 +2,40 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/splash_background"
+    android:background="@drawable/splash_background_no_logo"
     android:gravity="center"
     android:orientation="vertical">
 
-    <ProgressBar
-        android:id="@id/loading"
-        style="?android:attr/progressBarStyleLarge"
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:indeterminate="true" />
+        android:orientation="vertical"
+        android:gravity="center"
+        android:layout_marginBottom="50dp"
+        android:layout_centerInParent="true">
+
+        <FrameLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <com.victor.loading.book.BookLoading
+                android:id="@+id/book_loading"
+                android:layout_width="150dp"
+                android:layout_height="100dp" />
+            <TextView
+                android:id="@+id/percent"
+                android:layout_gravity="center"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:text="0%"/>
+        </FrameLayout>
+        <ImageView
+            android:padding="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="110dp"
+            android:src="@drawable/hk_logo"/>
+    </LinearLayout>
+
 </RelativeLayout>

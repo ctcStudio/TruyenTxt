@@ -5,17 +5,18 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.DisplayMetrics;
 import android.view.View;
-import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.hiepkhach9x.baseTruyenHK.entities.BookData;
 import com.hiepkhach9x.baseTruyenHK.entities.Setting;
 import com.hiepkhach9x.baseTruyenHK.task.SplitAndSaveBookTask;
 import com.hiepkhach9x.baseTruyenHK.task.implement.SplitBookListener;
-import com.hiepkhach9x.truyentxt.R;
-import com.hiepkhach9x.truyentxt.utils.BookPreferences;
 import com.hiepkhach9x.baseTruyenHK.utils.Config;
 import com.hiepkhach9x.baseTruyenHK.utils.Constants;
+import com.hiepkhach9x.truyentxt.R;
+import com.hiepkhach9x.truyentxt.utils.BookPreferences;
 import com.hiepkhach9x.truyentxt.utils.LogUtils;
+import com.victor.loading.book.BookLoading;
 
 import java.util.List;
 
@@ -24,9 +25,11 @@ import java.util.List;
  */
 public class SplashActivity extends AppCompatActivity implements SplitBookListener {
 
-    private ProgressBar mLoading;
+    private BookLoading mLoading;
+    private TextView mProcess;
     private BookData mBookData;
     private Setting mSetting;
+    SplitAndSaveBookTask processSplitBookTask;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,31 +57,45 @@ public class SplashActivity extends AppCompatActivity implements SplitBookListen
             BookPreferences.getInstance().saveSetting(mSetting);
         }
 
-        mLoading = (ProgressBar) findViewById(R.id.loading);
+        mLoading = (BookLoading) findViewById(R.id.book_loading);
+        mProcess = (TextView) findViewById(R.id.percent);
         mBookData = new BookData();
         mBookData.setTitle("Tru Tien");
         mBookData.setAuthor("Tieu Dinh");
         String filePath = Config.BOOK_FOLDER + Constants.SEPARATOR + Config.BOOK_NAME;
         mBookData.setPath(filePath);
-        SplitAndSaveBookTask processSplitBookTask = new SplitAndSaveBookTask(this,mSetting);
+        processSplitBookTask = new SplitAndSaveBookTask(this,mSetting);
         processSplitBookTask.setSplitBookListener(this);
         processSplitBookTask.execute(filePath);
+    }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if(processSplitBookTask !=null) {
+            processSplitBookTask.cancel(true);
+        }
     }
 
     @Override
     public void splitBookStart() {
-        mLoading.setVisibility(View.VISIBLE);
+        mProcess.setText("0%");
+        mLoading.start();
     }
 
     @Override
-    public void splitBookProcessUpdatePercent(int percent) {
-
+    public void splitBookProcessUpdatePercent(final int percent) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                mProcess.setText(percent + "%");
+            }
+        });
     }
 
     @Override
     public void splitBookFinish(List<String> lstPage) {
-        mLoading.setVisibility(View.GONE);
+        mLoading.stop();
         LogUtils.d("Size page: " + lstPage.size());
         mBookData.setPages(lstPage);
         Constants.BOOK_DATA_APP.put(Constants.KEY_BOOK_CONTENT, mBookData);
@@ -89,6 +106,7 @@ public class SplashActivity extends AppCompatActivity implements SplitBookListen
 
     @Override
     public void splitBookError(List<String> lstPage) {
+        mProcess.setText("100%");
         mLoading.setVisibility(View.GONE);
         mBookData.setPages(lstPage);
         Constants.BOOK_DATA_APP.put(Constants.KEY_BOOK_CONTENT, mBookData);

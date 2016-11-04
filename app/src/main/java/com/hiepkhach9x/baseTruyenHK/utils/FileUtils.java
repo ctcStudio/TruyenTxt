@@ -73,7 +73,7 @@ public class FileUtils {
             while ((line = bufferedReader.read(chars)) > 0) {
                 stringBuilder.append(chars, offset, line);
                 lengthData += line;
-                if(lengthData >= 20000 ) {
+                if(lengthData >= 10000 ) {
                     result.add(stringBuilder);
                     lengthData = 0;
                     stringBuilder = new StringBuilder();

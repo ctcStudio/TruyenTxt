@@ -6,7 +6,7 @@ android {
 
     defaultConfig {
         applicationId "com.hiepkhach9x.truyentxt"
-        minSdkVersion 9
+        minSdkVersion 11
         targetSdkVersion 23
         versionCode 1
         versionName "1.0"
@@ -27,4 +27,5 @@ dependencies {
     compile 'org.jetbrains:annotations:13.0'
     compile 'com.google.code.gson:gson:2.6.1'
     compile project(':justified')
+    compile project(':loading')
 }
