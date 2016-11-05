@@ -29,6 +29,24 @@
                 android:visibility="gone"
                 tools:ignore="NewApi" />
 
+            <FrameLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <com.victor.loading.book.BookLoading
+                    android:id="@+id/book_loading"
+                    android:layout_width="150dp"
+                    android:layout_height="100dp" />
+                <TextView
+                    android:id="@+id/percent"
+                    android:layout_gravity="center"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:text="0%"/>
+            </FrameLayout>
+
             <include
                 layout="@layout/nav_toolbar"
                 android:layout_width="match_parent"

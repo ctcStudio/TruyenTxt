@@ -26,7 +26,12 @@ public class SlidePagerAdapter extends FragmentStatePagerAdapter {
     }
 
     public void setListPage(List<String> listPage) {
-        this.listPage = listPage;
+        if (this.listPage != null) {
+            this.listPage.clear();
+            this.listPage.addAll(listPage);
+        } else {
+            this.listPage = listPage;
+        }
         notifyDataSetChanged();
     }
 

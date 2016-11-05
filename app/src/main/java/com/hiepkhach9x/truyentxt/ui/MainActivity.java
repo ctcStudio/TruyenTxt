@@ -28,6 +28,7 @@ import com.hiepkhach9x.truyentxt.entities.DrawerItem;
 import com.hiepkhach9x.baseTruyenHK.utils.Config;
 import com.hiepkhach9x.truyentxt.utils.LogUtils;
 import com.hiepkhach9x.truyentxt.utils.SystemUiHider;
+import com.victor.loading.book.BookLoading;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,6 +45,8 @@ public class MainActivity extends BaseReadActivity implements ReadFragment.OnRea
     private DrawerLayout mDrawerLayout;
     private ActionBarDrawerToggle mDrawerToggle;
     private ListView mLeftMenu;
+    private BookLoading mBookLoading;
+    private TextView mTextPercent;
     private ActionBar mActionBar;
     private EBookViewPagerView mViewPager;
     private SlidePagerAdapter mPagerAdapter;
@@ -81,6 +84,8 @@ public class MainActivity extends BaseReadActivity implements ReadFragment.OnRea
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mLeftMenu = (ListView) findViewById(R.id.left_menu);
         mViewPager = (EBookViewPagerView) findViewById(R.id.viewContent);
+        mBookLoading = (BookLoading) findViewById(R.id.book_loading);
+        mTextPercent = (TextView)findViewById(R.id.percent);
         mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
@@ -269,18 +274,26 @@ public class MainActivity extends BaseReadActivity implements ReadFragment.OnRea
 
     @Override
     public void splitBookStart() {
-        showLoading();
+        //showLoading();
+        mBookLoading.start();
+        mTextPercent.setText("0%");
     }
 
     @Override
-    public void splitBookProcessUpdatePercent(int percent) {
-
+    public void splitBookProcessUpdatePercent(final int percent) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                mTextPercent.setText(String.valueOf(percent) + "%");
+            }
+        });
     }
 
     @Override
     public void splitBookFinish(List<String> lstPage) {
-        hideLoading();
-        Toast.makeText(this, "number page: " + lstPage.size(), Toast.LENGTH_SHORT).show();
+        //hideLoading();
+        mBookLoading.stop();
+        mTextPercent.setText("100%");
         listPage = lstPage;
         mPagerAdapter.setListPage(listPage);
     }
