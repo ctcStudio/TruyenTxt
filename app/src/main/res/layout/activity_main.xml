@@ -31,7 +31,9 @@
 
             <FrameLayout
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:visibility="gone">
 
                 <com.victor.loading.book.BookLoading
                     android:id="@+id/book_loading"

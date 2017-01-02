@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import com.hiepkhach9x.baseTruyenHK.entities.BookData;
 import com.hiepkhach9x.baseTruyenHK.entities.Setting;
+import com.hiepkhach9x.baseTruyenHK.read_listener.impl.TxtReadBook;
 import com.hiepkhach9x.baseTruyenHK.task.SplitAndSaveBookTask;
 import com.hiepkhach9x.baseTruyenHK.task.implement.SplitBookListener;
 import com.hiepkhach9x.baseTruyenHK.utils.Config;
@@ -29,7 +30,7 @@ public class SplashActivity extends AppCompatActivity implements SplitBookListen
     private TextView mProcess;
     private BookData mBookData;
     private Setting mSetting;
-    SplitAndSaveBookTask processSplitBookTask;
+    private TxtReadBook txtReadBook;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,17 +65,14 @@ public class SplashActivity extends AppCompatActivity implements SplitBookListen
         mBookData.setAuthor("Tieu Dinh");
         String filePath = Config.BOOK_FOLDER + Constants.SEPARATOR + Config.BOOK_NAME;
         mBookData.setPath(filePath);
-        processSplitBookTask = new SplitAndSaveBookTask(this,mSetting);
-        processSplitBookTask.setSplitBookListener(this);
-        processSplitBookTask.execute(filePath);
+        txtReadBook = new TxtReadBook(this);
+        txtReadBook.readDataBook(filePath);
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if(processSplitBookTask !=null) {
-            processSplitBookTask.cancel(true);
-        }
+        txtReadBook.cancel();
     }
 
     @Override
